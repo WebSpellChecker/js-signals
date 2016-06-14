@@ -25,7 +25,13 @@
         this._prevParams = null;
 
         // enforce dispatch to aways work on same context (#47)
-        this.dispatch = Signal.prototype.dispatch.bind(this);
+
+        //this.dispatch = Signal.prototype.dispatch.bind(this);
+        //change unsupported in ie8 method "bind" on that construction
+        var self = this;
+        this.dispatch = function(){
+            Signal.prototype.dispatch.apply(self, arguments);
+        };
     }
 
     Signal.prototype = {
@@ -202,7 +208,7 @@
             if (! this.active) {
                 return;
             }
-            
+
             /**
              * When copying the arguments variable using Array.prototype.slice.call V8 disables optimization for the calling method.
              * We avoid this issue here by coping arguments to a pre-allocated array.
